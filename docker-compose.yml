@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    container_name: vehicle-damage-api
+    command: python -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+    networks:
+      - damage-net
+
+  frontend:
+    build: .
+    container_name: vehicle-damage-frontend
+    command: streamlit run demo.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000/predict
+    volumes:
+      # EL TRUCO MÁGICO TAMBIÉN AQUÍ
+      - ./:/app
+    depends_on:
+      - api
+    networks:
+      - damage-net
+
+networks:
+  damage-net:
+    driver: bridge

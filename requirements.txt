@@ -1,0 +1,12 @@
+fastapi
+numpy
+opencv_python
+Pillow
+PyYAML
+Requests
+scikit_learn
+streamlit
+tqdm
+ultralytics
+uvicorn
+python-multipart

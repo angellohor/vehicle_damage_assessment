@@ -1,0 +1,20 @@
+project:
+  name: "vehicle-damage-detect"
+  seed: 42
+
+data:
+  # Rutas absolutas o relativas a los archivos yaml generados
+  parts_config: "vehicle-damage-assesment/data/processed/parts_dataset/data.yaml"
+  damages_config: "vehicle-damage-assesment/data/processed/damages_dataset/data.yaml"
+
+model:
+  base_model: "yolov8n-seg.pt" # Nano segmentation (rápido)
+  img_size: 640
+  epochs: 30       # 30 épocas para probar rápido (luego subiremos a 100)
+  batch_size: 16
+  optimizer: "AdamW"
+
+mlflow:
+  experiment_name: "Vehicle_Damage_Experiment"
+  run_name_parts: "Parts_Segmentation_v1"
+  run_name_damages: "Damages_Segmentation_v1"

@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Data & Models (No queremos subir GBs de datos a GitHub)
+data/
+mlruns/
+*.pt
+*.onnx
+
+# IDE settings
+.vscode/
+.idea/
