@@ -19,7 +19,6 @@ This application leverages **Deep Learning (YOLOv8)** to automatically detect an
 **Pipeline:**
 1. **Part Segmentation:** Identifies vehicle body parts (High-Res Model).
 2. **Damage Detection:** Identifies scratches and dents (SAHI Tiling Strategy).
-3. **Severity Logic:** Classifies damages as Minor or Severe based on relative area.
 """)
 
 # --- SIDEBAR (CONTROL PANEL) ---
@@ -67,13 +66,23 @@ if uploaded_file is not None:
                     # 3. Display Processed Image
                     with col2:
                         st.subheader("🤖 AI Analysis Output")
-                        # Retrieve the path from the JSON response
+                        # Recuperamos la ruta que nos ha mandado la API en el JSON
                         result_path = data.get("imagen_procesada") 
                         
-                        if result_path and os.path.exists(result_path):
-                            st.image(result_path, width='stretch')
+                        if result_path:
+                            
+                            base_url = api_url.replace("/predict", "")
+                            api_image_url = f"{base_url}/get-image"
+                            
+                            img_response = requests.get(api_image_url, params={"image_path": result_path})
+                            
+                            if img_response.status_code == 200:
+                                
+                                st.image(img_response.content, width='stretch')
+                            else:
+                                st.error(f"❌ Error al descargar la imagen de la API. Código: {img_response.status_code}")
                         else:
-                            st.warning("⚠️ Processed image not found. (Are Streamlit and API running on the same machine?)")
+                            st.warning("⚠️ No se recibió la ruta de la imagen procesada.")
 
                     # 4. Display Technical Report
                     st.write("---")
@@ -89,9 +98,9 @@ if uploaded_file is not None:
                             with st.expander(f"🔴 Zone: {part.upper()}", expanded=True):
                                 for damage in damages:
                                     if "SEVERE" in damage:
-                                        st.error(f"⚠️ {damage} - (Recommended Action: **Replacement**)")
+                                        st.error(f"⚠️ {damage}")
                                     else:
-                                        st.warning(f"🛠️ {damage} - (Recommended Action: **Repair/Paint**)")
+                                        st.warning(f"🛠️ {damage}")
                 else:
                     st.error(f"❌ API Error: {response.status_code}")
                     st.write(response.text)
